@@ -1,38 +1,31 @@
-import { useState } from "react";
-import { Container } from "semantic-ui-react";
+import { Route } from 'react-router-dom';
+import { Container } from 'semantic-ui-react';
+import EventForm from '../../features/events/eventForm/EventForm';
 
-const {
-  default: EventDashboard,
-} = require("../../features/events/eventDashboard/EventDashboard");
-const { default: NavBar } = require("../../features/nav/NavBar");
+import EventDashboard from '../../features/events/eventDashboard/EventDashboard';
+import NavBar from '../../features/nav/NavBar';
+import HomePage from '../../features/home/HomePage';
+import EventDetailed from '../../features/events/eventDetailed/EventDetailed';
 
 function App() {
-  const [openForm, setOpenForm] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState(null);
-
-  function handleSelectedEvent(event) {
-    setSelectedEvent(event);
-    setOpenForm(true);
-  }
-
-  function createEventForm() {
-    setOpenForm(true);
-    setSelectedEvent(null);
-  }
-  return (
-    <>
-      <h1>React Social App</h1>
-      <NavBar setOpenForm={createEventForm} />
-      <Container className="main">
-        <EventDashboard
-          openForm={openForm}
-          setOpenForm={setOpenForm}
-          selectedEvent={selectedEvent}
-          setSelectedEvent={handleSelectedEvent}
-        />
-      </Container>
-    </>
-  );
+	return (
+		<>
+			<Route exact path="/" component={HomePage} />
+			<Route
+				path="/(.+)"
+				render={() => (
+					<>
+						<NavBar />
+						<Container className="main">
+							<Route exact path="/events" component={EventDashboard} />
+							<Route path="/events/:id" component={EventDetailed} />
+							<Route path={['/createEvent', '/manage/:id']} component={EventForm} />
+						</Container>
+					</>
+				)}
+			/>
+		</>
+	);
 }
 
 export default App;
