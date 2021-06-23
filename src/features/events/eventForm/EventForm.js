@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Header, Segment } from 'semantic-ui-react';
+import { Button, Header, Segment, Select } from 'semantic-ui-react';
 import cuid from 'cuid';
 import { Link } from 'react-router-dom';
 import { createEvent, updateEvent } from '../eventActions';
@@ -7,6 +7,9 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import TextInput from '../../../app/common/form/TextInput';
 import TextArea from '../../../app/common/form/TextArea';
+import SelectInput from '../../../app/common/form/SelectInput';
+import { categoryOptions } from '../../../app/api/categoryOptions';
+import DatePicker from '../../../app/common/form/DatePicker';
 export default function EventForm({ match, history }) {
 	const selectedEvent = useSelector((state) => state.event.events.find((evt) => evt.id === match.params.id));
 	const dispatch = useDispatch();
@@ -59,16 +62,40 @@ export default function EventForm({ match, history }) {
 					history.push('/events');
 				}}
 			>
-				<Form className="ui form">
-					<TextInput name="title" placeholder="Event Title" />
-					<TextInput name="category" placeholder="Event Category" />
-					<TextArea name="description" placeholder="Event Description" rows="3" />
-					<TextInput name="city" placeholder="City" />
-					<TextInput name="venue" placeholder="Venue" />
-					<TextInput name="date" placeholder="Venue" type="date" />
-					<Button type="submit" floated="right" positive content="submit" />
-					<Button as={Link} to="/events" type="submit" floated="right" content="cancel" />
-				</Form>
+				{({ isSubmitting, dirty, isValid }) => (
+					<Form className="ui form">
+						<TextInput name="title" placeholder="Event Title" />
+						<SelectInput name="category" placeholder="Event Category" options={categoryOptions} />
+						<TextArea name="description" placeholder="Event Description" rows="3" />
+						<TextInput name="city" placeholder="City" />
+						<TextInput name="venue" placeholder="Venue" />
+						<DatePicker
+							name="date"
+							placeholderText="Event date"
+							timeFormat="HH:mm"
+							showTimeSelect
+							timeCaption="time"
+							dateFormat="MMMM d, yyyy h:mm a"
+						/>
+
+						<Button
+							loading={isSubmitting}
+							disabled={!isValid || !dirty || isSubmitting}
+							type="submit"
+							floated="right"
+							positive
+							content="submit"
+						/>
+						<Button
+							disabled={isSubmitting}
+							as={Link}
+							to="/events"
+							type="submit"
+							floated="right"
+							content="cancel"
+						/>
+					</Form>
+				)}
 			</Formik>
 		</Segment>
 	);

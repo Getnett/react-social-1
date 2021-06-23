@@ -1,8 +1,7 @@
 import { Grid } from 'semantic-ui-react';
 import EventList from './EventList';
-import EventForm from '../eventForm/EventForm';
-
 import { useSelector } from 'react-redux';
+
 export default function EventDashboard() {
 	const { events } = useSelector((state) => state.event);
 

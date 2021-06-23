@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Segment, Header, Item, Button, Image } from 'semantic-ui-react';
+import { format } from 'date-fns';
 
 const eventImageStyle = {
 	filter: 'brightness(30%)',
@@ -15,17 +16,17 @@ const eventImageTextStyle = {
 };
 
 export default function EventDetailedHeader({ event }) {
+	console.log('[EVENT-HEADER]', event.category);
 	return (
 		<Segment.Group>
 			<Segment basic attached="top" style={{ padding: '0' }}>
-				<Image src={`/assets/categoryImages/drinks.jpg`} style={eventImageStyle} fluid />
-
+				<Image src={`/assets/categoryImages/${event.category}.jpg`} style={eventImageStyle} fluid />
 				<Segment basic style={eventImageTextStyle}>
 					<Item.Group>
 						<Item>
 							<Item.Content>
 								<Header size="huge" content={event.title} style={{ color: 'white' }} />
-								<p>{event.date}</p>
+								<p>{format(event.date, 'MMMM d,yyyy, H:mm a')}</p>
 								<p>
 									Hosted by <strong>{event.hostedBy}</strong>
 								</p>
