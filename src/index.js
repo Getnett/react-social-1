@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import 'semantic-ui-css/semantic.min.css';
+import 'react-calendar/dist/Calendar.css';
+import 'react-toastify/dist/ReactToastify.min.css';
 import './app/layout/styles.css';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
@@ -10,9 +12,12 @@ import createStore from './app/store/configureStore';
 import App from './app/layout/App';
 import ScrollToTop from './app/layout/scrollToTop';
 
+import { loadEvents } from './features/events/eventActions';
+
 const rootEl = document.getElementById('root');
 
 const store = createStore();
+store.dispatch(loadEvents());
 function render() {
 	ReactDOM.render(
 		<Provider store={store}>

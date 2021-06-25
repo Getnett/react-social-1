@@ -7,7 +7,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 export default function DatePicker({ label, ...props }) {
 	const { setFieldValue } = useFormikContext();
-	const [field, meata, helpers] = useField(props);
+	const [field, meata] = useField(props);
 	return (
 		<FormField error={meata.touched && !!meata.error}>
 			<label>{label}</label>
