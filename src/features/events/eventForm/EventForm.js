@@ -1,17 +1,27 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Header, Segment, Select } from 'semantic-ui-react';
-import cuid from 'cuid';
-import { Link } from 'react-router-dom';
-import { createEvent, updateEvent } from '../eventActions';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Button, Header, Segment } from 'semantic-ui-react';
+
+import { Link, Redirect } from 'react-router-dom';
+import { listenToEvents } from '../eventActions';
+import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import TextInput from '../../../app/common/form/TextInput';
 import TextArea from '../../../app/common/form/TextArea';
 import SelectInput from '../../../app/common/form/SelectInput';
 import { categoryOptions } from '../../../app/api/categoryOptions';
 import DatePicker from '../../../app/common/form/DatePicker';
+import { useFirestoreDoc } from '../../../app/hooks/useFirestoreDoc';
+import {
+	addEventToFirestore,
+	cancelEventInFirestore,
+	listenToEventFirestore,
+	updateEventInFirestore,
+} from '../../../app/firebase/firebaseFirestore';
+import LoadingComponent from '../../../app/layout/LoadingComponent';
+import { toast } from 'react-toastify';
 export default function EventForm({ match, history }) {
 	const selectedEvent = useSelector((state) => state.event.events.find((evt) => evt.id === match.params.id));
+	const { loading, error } = useSelector((state) => state.async);
 	const dispatch = useDispatch();
 	const initialFormState = selectedEvent ?? {
 		title: '',
@@ -30,36 +40,31 @@ export default function EventForm({ match, history }) {
 		venue: Yup.string().required(),
 		date: Yup.string().required(),
 	});
+	useFirestoreDoc({
+		query: () => listenToEventFirestore(match.params.id),
+		data: (event) => dispatch(listenToEvents([event])),
+		deps: [match.params.id, dispatch],
+		shouldExecute: !!match.params.id,
+	});
+	if (loading) {
+		return <LoadingComponent />;
+	}
+	if (error) return <Redirect to="/not-found" />;
 	return (
 		<Segment clearing>
 			<Header content={selectedEvent ? 'Edit event ' : 'Create New Event'} />
 			<Formik
 				validationSchema={validationSchema}
 				initialValues={initialFormState}
-				onSubmit={(values) => {
-					selectedEvent
-						? dispatch(updateEvent({ ...selectedEvent, ...values }))
-						: dispatch(
-								createEvent({
-									...values,
-									id: cuid(),
-									hostedBy: 'Getnet',
-									attendees: [
-										{
-											id: 'a',
-											name: 'Bob',
-											photoURL: 'https://randomuser.me/api/portraits/men/20.jpg',
-										},
-										{
-											id: 'b',
-											name: 'Tom',
-											photoURL: 'https://randomuser.me/api/portraits/men/22.jpg',
-										},
-									],
-									hostPhotoURL: '/assets/user.png',
-								})
-						  );
-					history.push('/events');
+				onSubmit={async (values, { setSubmitting }) => {
+					try {
+						selectedEvent ? await updateEventInFirestore(values) : await addEventToFirestore(values);
+						setSubmitting(false);
+						history.push('/events');
+					} catch (error) {
+						toast.error(error.message);
+						setSubmitting(false);
+					}
 				}}
 			>
 				{({ isSubmitting, dirty, isValid }) => (
@@ -77,6 +82,15 @@ export default function EventForm({ match, history }) {
 							timeCaption="time"
 							dateFormat="MMMM d, yyyy h:mm a"
 						/>
+						{selectedEvent && (
+							<Button
+								type="button"
+								floated="left"
+								color={selectedEvent.isCancelled ? 'green' : 'red'}
+								content={selectedEvent.isCancelled ? 'Reactivate Event' : 'Cancel Event'}
+								onClick={() => cancelEventInFirestore(selectedEvent)}
+							/>
+						)}
 
 						<Button
 							loading={isSubmitting}
