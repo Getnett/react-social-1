@@ -1,15 +1,14 @@
 import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import { Dropdown, Image, Menu } from 'semantic-ui-react';
-import { signOutUser } from '../auth/authActions';
+import { signOutFirebaseUser } from '../../app/firebase/firebaseAuth';
 export default function SignedInMenu() {
 	const { currentUser } = useSelector((state) => state.auth);
-	const dispatch = useDispatch();
+
 	const history = useHistory();
 
-	function handleSignOut() {
-		dispatch(signOutUser());
+	async function handleSignOut() {
+		signOutFirebaseUser();
 		history.push('/');
 	}
 	return (

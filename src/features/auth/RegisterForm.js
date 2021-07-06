@@ -5,34 +5,37 @@ import TextInput from '../../app/common/form/TextInput';
 import { Button, Divider, Label } from 'semantic-ui-react';
 import { useDispatch } from 'react-redux';
 import { closeModal } from '../../app/common/modals/modalReducer';
-import { signInWithEmail } from '../../app/firebase/firebaseAuth';
+import { signUpUsers } from '../../app/firebase/firebaseAuth';
 import SocialLogin from './SocialLogin';
-export default function LoginForm() {
+export default function RegisterForm() {
 	const dispatch = useDispatch();
 	return (
-		<ModalWrapper size="mini" header="Sign In">
+		<ModalWrapper size="mini" header="Sign Up">
 			<Formik
 				initialValues={{
+					displayName: '',
 					email: '',
 					password: '',
 				}}
 				validationSchema={Yup.object({
+					displayName: Yup.string().required(),
 					email: Yup.string().required().email(),
 					password: Yup.string().required(),
 				})}
 				onSubmit={async (values, { setSubmitting, setErrors }) => {
 					try {
-						await signInWithEmail(values);
+						await signUpUsers(values);
 						setSubmitting(false);
 						dispatch(closeModal());
 					} catch (error) {
-						setErrors({ auth: 'Wrong  email or password' });
+						setErrors({ auth: error.message });
 						setSubmitting(false);
 					}
 				}}
 			>
 				{({ isSubmitting, isValid, dirty, errors }) => (
 					<Form autoComplete="off" className="ui form">
+						<TextInput name="displayName" type="text" placeholder="User Name" />
 						<TextInput name="email" type="email" placeholder="Your email" />
 						<TextInput name="password" type="password" placeholder="Password" />
 						{errors.auth && <Label basic color="red" content={errors.auth} style={{ marginBottom: 10 }} />}
@@ -43,7 +46,7 @@ export default function LoginForm() {
 							fluid
 							size="large"
 							color="teal"
-							content="Sign In"
+							content="Sign Up"
 						/>
 						<Divider horizontal>Or</Divider>
 						<SocialLogin />

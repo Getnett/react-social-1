@@ -1,13 +1,26 @@
 import { SIGN_IN_USER, SIGN_OUT_USER } from './authActionTypes';
-export function signInUser(payload) {
+import firebase from '../../app/config/firebaseConfig';
+export function signInUser(user) {
 	return {
 		type: SIGN_IN_USER,
-		payload,
+		payload: user,
 	};
 }
 
 export function signOutUser() {
 	return {
 		type: SIGN_OUT_USER,
+	};
+}
+
+export function verifyAuth() {
+	return function (dispatch) {
+		return firebase.auth().onAuthStateChanged((user) => {
+			if (user) {
+				dispatch(signInUser(user));
+			} else {
+				dispatch(signOutUser());
+			}
+		});
 	};
 }

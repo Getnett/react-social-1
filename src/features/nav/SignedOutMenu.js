@@ -6,7 +6,13 @@ export default function SignedOutMenu() {
 	return (
 		<Menu.Item position="right">
 			<Button basic inverted onClick={() => dispatch(openModal({ modalType: 'LoginForm' }))} content="Login" />
-			<Button basic inverted content="Register" style={{ marginLeft: '.5em' }} />
+			<Button
+				basic
+				inverted
+				onClick={() => dispatch(openModal({ modalType: 'RegisterForm' }))}
+				content="Register"
+				style={{ marginLeft: '.5em' }}
+			/>
 		</Menu.Item>
 	);
 }
