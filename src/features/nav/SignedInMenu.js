@@ -3,7 +3,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { Dropdown, Image, Menu } from 'semantic-ui-react';
 import { signOutFirebaseUser } from '../../app/firebase/firebaseAuth';
 export default function SignedInMenu() {
-	const { currentUser } = useSelector((state) => state.auth);
+	const { currentUserProfile } = useSelector((state) => state.profile);
 
 	const history = useHistory();
 
@@ -13,11 +13,11 @@ export default function SignedInMenu() {
 	}
 	return (
 		<Menu.Item position="right">
-			<Image avatar spaced="right" src={currentUser.photoURL || '/assets/user.png'} />
-			<Dropdown pointing="top left" text={currentUser.displayName}>
+			<Image avatar spaced="right" src={currentUserProfile.photoURL || '/assets/user.png'} />
+			<Dropdown pointing="top left" text={currentUserProfile.displayName}>
 				<Dropdown.Menu>
 					<Dropdown.Item as={Link} to="/createEvent" text="Create Event" icon="plus" />
-					<Dropdown.Item text="My profile " icon="user" />
+					<Dropdown.Item text="My profile " icon="user" as={Link} to={`/profile/${currentUserProfile.id}`} />
 					<Dropdown.Item text="My account" as={Link} to="/account" icon="settings" />
 					<Dropdown.Item text="Log out" onClick={handleSignOut} icon="power" />
 				</Dropdown.Menu>

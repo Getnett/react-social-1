@@ -16,7 +16,6 @@ const eventImageTextStyle = {
 };
 
 export default function EventDetailedHeader({ event }) {
-	console.log('[EVENT-HEADER]', event.category);
 	return (
 		<Segment.Group>
 			<Segment basic attached="top" style={{ padding: '0' }}>
