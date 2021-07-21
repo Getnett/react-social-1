@@ -1,10 +1,14 @@
-import { createStore, applyMiddleware } from 'redux';
-import { composeWithDevTools } from 'redux-devtools-extension';
-import rootReducer from '../store/rootReducer';
-import thunk from 'redux-thunk';
-import { verifyAuth } from '../../features/auth/authActions';
+import { createStore, applyMiddleware } from 'redux'
+import { composeWithDevTools } from 'redux-devtools-extension'
+import thunk from 'redux-thunk'
+import rootReducer from '../store/rootReducer'
+import { verifyAuth } from '../../features/auth/authActions'
+
 export default function store() {
-	const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)));
-	store.dispatch(verifyAuth());
-	return store;
+  const reduxStore = createStore(
+    rootReducer,
+    composeWithDevTools(applyMiddleware(thunk))
+  )
+  reduxStore.dispatch(verifyAuth())
+  return reduxStore
 }

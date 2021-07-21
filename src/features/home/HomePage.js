@@ -5,7 +5,7 @@ import {
   Icon,
   Image,
   Segment,
-} from "semantic-ui-react";
+} from 'semantic-ui-react'
 
 export default function HomePage({ history }) {
   return (
@@ -19,11 +19,11 @@ export default function HomePage({ history }) {
           />
           React-Social
         </Header>
-        <Button onClick={() => history.push("/events")} size="huge" inverted>
+        <Button onClick={() => history.push('/events')} size="huge" inverted>
           Get Started
           <Icon name="right arrow" />
         </Button>
       </Container>
     </Segment>
-  );
+  )
 }

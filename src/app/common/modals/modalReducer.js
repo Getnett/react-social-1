@@ -1,32 +1,34 @@
-const OPEN_MODAL = 'OPEN_MODAL';
-const CLOSE_MODAL = 'CLOSE_MODAL';
+const OPEN_MODAL = 'OPEN_MODAL'
+const CLOSE_MODAL = 'CLOSE_MODAL'
 
 export function openModal(payload) {
-	return {
-		type: OPEN_MODAL,
-		payload,
-	};
+  return {
+    type: OPEN_MODAL,
+    payload,
+  }
 }
 
 export function closeModal() {
-	return {
-		type: CLOSE_MODAL,
-	};
+  return {
+    type: CLOSE_MODAL,
+  }
 }
 
-const initialState = null;
-export default function modalReducer(state = initialState, { type, payload }) {
-	switch (type) {
-		case OPEN_MODAL:
-			const { modalType, modalProps } = payload;
-			return {
-				modalType,
-				modalProps,
-			};
+const initialState = null
+export default function modalReducer(
+  state = initialState,
+  { type, payload: { modalType, modalProps } }
+) {
+  switch (type) {
+    case OPEN_MODAL:
+      return {
+        modalType,
+        modalProps,
+      }
 
-		case CLOSE_MODAL:
-			return null;
-		default:
-			return state;
-	}
+    case CLOSE_MODAL:
+      return null
+    default:
+      return state
+  }
 }
