@@ -15,12 +15,11 @@ export function closeModal() {
 }
 
 const initialState = null
-export default function modalReducer(
-  state = initialState,
-  { type, payload: { modalType, modalProps } }
-) {
+export default function modalReducer(state = initialState, { type, payload }) {
   switch (type) {
     case OPEN_MODAL:
+      // eslint-disable-next-line no-case-declarations
+      const { modalType, modalProps } = payload
       return {
         modalType,
         modalProps,

@@ -1,5 +1,6 @@
 import { Tab } from 'semantic-ui-react'
 import AboutUser from './AboutUser'
+import UserEvent from './UserEvent'
 import UserPhotos from './UserPhotos'
 
 export default function ProfileContent({ profile, isCurrentUser }) {
@@ -16,7 +17,10 @@ export default function ProfileContent({ profile, isCurrentUser }) {
         <UserPhotos profile={profile} isCurrentUser={isCurrentUser} />
       ),
     },
-    { menuItem: 'Events', render: () => <Tab.Pane>Events</Tab.Pane> },
+    {
+      menuItem: 'Events',
+      render: () => <UserEvent profile={profile}>Events</UserEvent>,
+    },
     { menuItem: 'Followers', render: () => <Tab.Pane>Followers</Tab.Pane> },
     { menuItem: 'Following', render: () => <Tab.Pane>Following</Tab.Pane> },
   ]

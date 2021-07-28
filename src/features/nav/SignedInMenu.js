@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux'
 import { Link, useHistory } from 'react-router-dom'
 import { Dropdown, Image, Menu } from 'semantic-ui-react'
 import { signOutFirebaseUser } from '../../app/firebase/firebaseAuth'
+
 export default function SignedInMenu() {
   const { currentUserProfile } = useSelector((state) => state.profile)
 
@@ -16,9 +17,15 @@ export default function SignedInMenu() {
       <Image
         avatar
         spaced="right"
-        src={currentUserProfile.photoURL || '/assets/user.png'}
+        src={
+          (currentUserProfile && currentUserProfile.photoURL) ||
+          '/assets/user.png'
+        }
       />
-      <Dropdown pointing="top left" text={currentUserProfile.displayName}>
+      <Dropdown
+        pointing="top left"
+        text={currentUserProfile && currentUserProfile.displayName}
+      >
         <Dropdown.Menu>
           <Dropdown.Item
             as={Link}
@@ -30,7 +37,7 @@ export default function SignedInMenu() {
             text="My profile "
             icon="user"
             as={Link}
-            to={`/profile/${currentUserProfile.id}`}
+            to={`/profile/${currentUserProfile && currentUserProfile.id}`}
           />
           <Dropdown.Item
             text="My account"

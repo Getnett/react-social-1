@@ -11,17 +11,25 @@ import EventDetailedInfo from './EventDetailedInfo'
 import EventDetailedSidBar from './EventDetailedSideBar'
 
 export default function EventDetailed({ match }) {
+  const dispatch = useDispatch()
+  const { currentUser } = useSelector((state) => state.auth)
   const event = useSelector((state) =>
     state.event.events.find((evt) => evt.id === match.params.id)
   )
+
   const { loading, error } = useSelector((state) => state.async)
-  const dispatch = useDispatch()
+  const isHost = currentUser && currentUser.uid === (event && event.hostUid)
+  const isGoing =
+    event &&
+    event.attendees &&
+    event.attendees.some((a) => a.id === currentUser && currentUser.uid)
 
   useFirestoreDoc({
     query: () => listenToEventFirestore(match.params.id),
     data: (eventData) => dispatch(listenToEvents([eventData])),
     deps: [match.params.id, dispatch],
   })
+
   if ((loading || !event) && !error) {
     return <LoadingComponent />
   }
@@ -29,12 +37,15 @@ export default function EventDetailed({ match }) {
   return (
     <Grid>
       <Grid.Column width="10">
-        <EventDetailedHeader event={event} />
+        <EventDetailedHeader event={event} isHost={isHost} isGoing={isGoing} />
         <EventDetailedInfo event={event} />
         <EventDetailedChat />
       </Grid.Column>
       <Grid.Column width="6">
-        <EventDetailedSidBar attendees={event.attendees} />
+        <EventDetailedSidBar
+          attendees={event && event.attendees}
+          host={event && event.hostUid}
+        />
       </Grid.Column>
     </Grid>
   )

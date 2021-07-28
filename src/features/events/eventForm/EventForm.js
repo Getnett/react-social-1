@@ -1,10 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, Header, Segment } from 'semantic-ui-react'
-
 import { Link, Redirect } from 'react-router-dom'
-import { listenToEvents } from '../eventActions'
+
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
+import { toast } from 'react-toastify'
+
+import { listenToEvents } from '../eventActions'
 import TextInput from '../../../app/common/form/TextInput'
 import TextArea from '../../../app/common/form/TextArea'
 import SelectInput from '../../../app/common/form/SelectInput'
@@ -18,7 +20,7 @@ import {
   updateEventInFirestore,
 } from '../../../app/firebase/firebaseFirestore'
 import LoadingComponent from '../../../app/layout/LoadingComponent'
-import { toast } from 'react-toastify'
+
 export default function EventForm({ match, history }) {
   const selectedEvent = useSelector((state) =>
     state.event.events.find((evt) => evt.id === match.params.id)
@@ -60,13 +62,16 @@ export default function EventForm({ match, history }) {
         initialValues={initialFormState}
         onSubmit={async (values, { setSubmitting }) => {
           try {
-            selectedEvent
-              ? await updateEventInFirestore(values)
-              : await addEventToFirestore(values)
+            if (selectedEvent) {
+              await updateEventInFirestore(values)
+            } else {
+              await addEventToFirestore(values)
+            }
+
             setSubmitting(false)
             history.push('/events')
-          } catch (error) {
-            toast.error(error.message)
+          } catch (err) {
+            toast.error(err.message)
             setSubmitting(false)
           }
         }}

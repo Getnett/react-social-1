@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux'
 import eventReducer from '../../features/events/eventReducer'
+// eslint-disable-next-line import/no-useless-path-segments
 import testReducer from '../../app/sandbox/testReducer'
 
 import modalReducer from '../common/modals/modalReducer'

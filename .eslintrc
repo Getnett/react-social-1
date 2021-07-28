@@ -17,9 +17,16 @@
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     "react/react-in-jsx-scope": "off",
+    "react/jsx-props-no-spreading": "off",
+    "react/display-name": "warn",
+    "jsx-a11y/label-has-associated-control": "warn",
     "react/prop-types": "off",
     "no-console": "warn",
-    "import/prefer-default-export": "off"
+    "import/prefer-default-export": "off",
+    "import/no-named-as-default": "off",
+    "no-bitwise": "warn",
+    "no-shadow": "warn",
+    "no-unused-vars": "warn"
   },
   "parserOptions": {
     "ecmaFeatures": {

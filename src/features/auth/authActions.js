@@ -6,6 +6,7 @@ import {
   getUserProfile,
 } from '../../app/firebase/firebaseFirestore'
 import { listenToCurrentUserProfile } from '../profiles/profileActions'
+
 export function signInUser(user) {
   return {
     type: SIGN_IN_USER,

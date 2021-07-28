@@ -1,6 +1,7 @@
-import { Segment, Item } from 'semantic-ui-react'
+import { Link } from 'react-router-dom'
+import { Segment, Item, Label } from 'semantic-ui-react'
 
-export default function EventDetailedSidBar({ attendees }) {
+export default function EventDetailedSidBar({ attendees, host }) {
   return (
     <>
       <Segment
@@ -11,23 +12,38 @@ export default function EventDetailedSidBar({ attendees }) {
         inverted
         color="teal"
       >
-        2 People Going
+        {attendees.length}
+        {attendees.length > 1 ? 'People' : 'Person'}
       </Segment>
       <Segment attached>
         <Item.Group relaxed divided>
-          {attendees.map((attendee) => (
-            <Item key={attendee.id} style={{ position: 'relative' }}>
-              <Item.Image
-                size="tiny"
-                src={attendee.photoURL || '/assets/user.png'}
-              />
-              <Item.Content verticalAlign="middle">
-                <Item.Header as="h3">
-                  <span>{attendee.name}</span>
-                </Item.Header>
-              </Item.Content>
-            </Item>
-          ))}
+          {attendees &&
+            attendees.map((attendee) => (
+              <Item
+                as={Link}
+                to={`/profile/${attendee.id}`}
+                key={attendee.id}
+                style={{ position: 'relative' }}
+              >
+                {host === attendee.id && (
+                  <Label
+                    style={{ position: 'absolute' }}
+                    color="orange"
+                    ribbon="right"
+                    content="Host"
+                  />
+                )}
+                <Item.Image
+                  size="tiny"
+                  src={attendee.photoURL || '/assets/user.png'}
+                />
+                <Item.Content verticalAlign="middle">
+                  <Item.Header as="h3">
+                    <span>{attendee.displayName}</span>
+                  </Item.Header>
+                </Item.Content>
+              </Item>
+            ))}
         </Item.Group>
       </Segment>
     </>
