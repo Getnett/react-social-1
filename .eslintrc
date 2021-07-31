@@ -26,7 +26,8 @@
     "import/no-named-as-default": "off",
     "no-bitwise": "warn",
     "no-shadow": "warn",
-    "no-unused-vars": "warn"
+    "no-unused-vars": "warn",
+    "prefer-object-spread": "off"
   },
   "parserOptions": {
     "ecmaFeatures": {

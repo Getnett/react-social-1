@@ -5,6 +5,14 @@ import firebase from '../config/firebaseConfig'
 
 const db = firebase.firestore()
 
+// util  object to array
+
+export function objectSnapshotToArray(snapshot) {
+  return Object.entries(snapshot).map((ele) =>
+    Object.assign({}, ele[1], { id: ele[0] })
+  )
+}
+
 export function dataFromSnapshot(snapshot) {
   if (!snapshot.exists) return undefined
   const data = snapshot.data()
@@ -25,6 +33,7 @@ export function dataFromSnapshot(snapshot) {
 export function listenToEventsFirestore(filter) {
   const user = firebase.auth().currentUser
   const unfilteredEvent = db.collection('events').orderBy('date')
+
   switch (filter.get('filter')) {
     case 'isGoing':
       return unfilteredEvent
@@ -194,15 +203,10 @@ export function getUserEventsQuery(activeTab, userUid) {
 
   switch (activeTab) {
     case 1:
-      console.log('WHY-ACT', activeTab)
-
       unfilteredEvents
         .where('attendeesId', 'array-contains', userUid)
         .where('date', '<=', today)
         .orderBy('date', 'desc')
-        .onSnapshot((snapshot) => {
-          console.log('DATA', snapshot)
-        })
 
       return unfilteredEvents
         .where('attendeesId', 'array-contains', userUid)
@@ -218,4 +222,21 @@ export function getUserEventsQuery(activeTab, userUid) {
         .where('date', '>=', today)
         .orderBy('date')
   }
+}
+
+export function addEventChatComment(eventId, values) {
+  const user = firebase.auth().currentUser
+  const newComment = {
+    uid: user.uid,
+    displayName: user.displayName,
+    photoURL: user.photoURL,
+    text: values.comment,
+    parentId: values.parentId,
+    date: Date.now(),
+  }
+  return firebase.database().ref(`chat/${eventId}`).push(newComment)
+}
+
+export function getEventChat(eventId) {
+  return firebase.database().ref(`chat/${eventId}`).orderByKey()
 }
